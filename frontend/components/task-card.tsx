@@ -31,9 +31,11 @@ export function TaskCard({ task }: { task: Task }) {
   const status = statusMeta(task.status);
   const due = dueStateMeta(task.due_state ?? null);
 
+  const cardTone = status.tone === "danger" ? "task-danger" : status.tone === "warning" ? "task-warning" : status.tone === "success" ? "task-success" : "task-primary";
+
   return (
     <Link href={`/tasks/${encodeURIComponent(task.id)}`} className="block rounded-card focus:outline-none focus:ring-2 focus:ring-primary">
-      <article className="rounded-card border border-border bg-surface p-4 shadow-sm transition-shadow hover:shadow-md">
+      <article className={`task-card ${cardTone} rounded-card border border-border bg-surface p-4 transition-all`}>
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
           <h3 className="truncate text-sm font-semibold text-text">{task.title}</h3>

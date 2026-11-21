@@ -34,14 +34,23 @@ export class ApiError extends Error implements AppErrorLike {
     this.name = "ApiError";
     this.status = status;
     this.code = code;
-    this.userMessage = userMessageFor(code, message);
+    this.userMessage = userMessageFor(status, code, message);
     // 网络/超时/服务不可用才建议重试；业务冲突（如版本过期）重试无意义。
     this.retryable =
       status >= 500 || status === 408 || status === 429 || status === 0;
   }
 }
 
-function userMessageFor(code: string, fallback: string): string {
+export function getUserErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof ApiError) return error.userMessage;
+  return fallback;
+}
+
+function userMessageFor(status: number, code: string, fallback: string): string {
+  if (status === 0) return "网络连接失败，请检查网络后重试。";
+  if (status === 408 || status === 504) return "请求超时，请稍后重试。";
+  if (status === 429) return "操作较频繁，请稍候再试。";
+  if (status >= 500) return "服务暂时不可用，请稍后重试。";
   const known: Record<string, string> = {
     not_found: "没有找到对应的内容，可能已被删除。",
     forbidden: "当前身份没有权限执行这个操作。",
@@ -49,7 +58,12 @@ function userMessageFor(code: string, fallback: string): string {
     validation_error: "填写的内容不符合要求，请检查后重试。",
     bad_request: "请求无法处理，请检查后重试。",
   };
-  return known[code] ?? fallback;
+  if (known[code]) return known[code];
+  if (status === 401 || status === 403) return known.forbidden;
+  if (status === 404) return known.not_found;
+  if (status === 409) return known.conflict;
+  if (status === 400 || status === 422) return known.validation_error;
+  return fallback || "请求未完成，请稍后重试。";
 }
 
 function buildUrl(path: string, params?: Record<string, string | number | undefined>): string {
