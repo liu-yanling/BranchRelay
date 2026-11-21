@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BranchRelay · 银行智能办公与协同管理平台</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">BranchRelay</span>
+      <span class="subtitle">银行智能办公与协同管理平台</span>
+      <span class="badge badge-sim">比赛模拟数据</span>
+    </div>
+    <div class="top-right">
+      <span class="demo-time">演示时间：<b id="demoTime">—</b></span>
+      <span class="model-badge" id="modelBadge" title="模型密钥可用性">模型：检测中</span>
+      <label class="role-label">身份
+        <select id="roleSelect"></select>
+      </label>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="workbench" class="tab active">我的工作台</button>
+    <button data-tab="board" class="tab">支行看板</button>
+    <button data-tab="notifications" class="tab">通知 <span class="unread-pill" id="unreadPill" hidden></span></button>
+    <button data-tab="report" class="tab">AI 周报</button>
+  </nav>
+
+  <main id="main" class="main"></main>
+
+  <!-- 任务详情弹窗 -->
+  <div class="modal-backdrop" id="taskModal" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <h2 id="taskModalTitle">任务详情</h2>
+        <button class="close" data-close="taskModal">×</button>
+      </div>
+      <div class="modal-body" id="taskModalBody"></div>
+    </div>
+  </div>
+
+  <!-- 安排任务弹窗 -->
+  <div class="modal-backdrop" id="createModal" hidden>
+    <div class="modal">
+      <div class="modal-head">
+        <h2>安排任务</h2>
+        <button class="close" data-close="createModal">×</button>
+      </div>
+      <div class="modal-body" id="createModalBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
